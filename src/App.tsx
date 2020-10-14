@@ -1,26 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense } from 'react'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import routes, { routerType } from '../src/router/index'
+
+const App = () => {
+	return (
+		<BrowserRouter>
+			<Suspense fallback={Loading}>
+				<Switch>
+					{routes.map((route, i) => (
+						<SubRoutes key={i} {...route} />
+					))}
+				</Switch>
+			</Suspense>
+		</BrowserRouter>
+	)
 }
 
-export default App;
+// 加载中效果
+const Loading = () => {
+	return <div>Loading……</div>
+}
+
+// 子页面
+const SubRoutes = (route: routerType) => {
+	return (
+		<Route
+			path={route.path}
+			render={(props) => <route.component {...props} routes={route.routes} />}
+		/>
+	)
+}
+
+export default App
